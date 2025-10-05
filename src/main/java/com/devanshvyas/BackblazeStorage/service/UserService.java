@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +22,16 @@ public class UserService {
     @Autowired
     private UserRepo repo;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
+
     public ResponseEntity<ApiResponse<String>> register(User user) throws DataIntegrityViolationException {
         try {
+            String encryptPass = new BCryptPasswordEncoder(12).encode(user.getPassword());
+            user.setPassword(encryptPass);
             repo.save(user);
         } catch (DataIntegrityViolationException e) {
             throw e;
@@ -28,15 +40,12 @@ public class UserService {
     }
 
     public ResponseEntity<ApiResponse<String>> login(User user) {
-        User dbUser = repo.findByUsername(user.getUsername());
-        if (dbUser == null) {
-            return ResponseUtil.error("User not found", "User not found");
-        } else {
-            if (Objects.equals(dbUser.getPassword(), user.getPassword())) {
-                return ResponseUtil.success("Login Successful", "Login Successful");
-            } else {
-                return ResponseUtil.error("Incorrect credentials", "Incorrect credentials");
-            }
+        UsernamePasswordAuthenticationToken userPassToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        Authentication authentication = authenticationManager.authenticate(userPassToken);
+        if (authentication.isAuthenticated()) {
+            String jwtToken = jwtService.generateToken(user.getUsername());
+            return ResponseUtil.success("success", jwtToken);
         }
+        return ResponseUtil.error("Login Failed!", "Login Failed!");
     }
 }
