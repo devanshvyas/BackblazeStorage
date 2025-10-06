@@ -3,6 +3,8 @@ package com.devanshvyas.BackblazeStorage.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.Instant;
+
 @Data
 @Entity
 @Table(name = "users")
@@ -12,12 +14,19 @@ public class User {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String email;
 
     private String password;
 
-    private String role;
+    private UserRole role;
 
-    @Column(name = "backblazekey")
-    private String backblazeKey;
+    @Column(name = "admin_id")
+    private Integer adminId;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private StorageConfig storageConfig;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
 }

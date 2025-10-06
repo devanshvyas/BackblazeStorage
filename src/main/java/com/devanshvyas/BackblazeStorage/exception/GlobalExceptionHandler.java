@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         String message = "A database integrity constraint are violated";
 
         if (exception.getMostSpecificCause().getMessage().contains("violates unique constraint")) {
-            message = "This username is already taken. Please choose a different one.";
+            message = "This email is already taken. Please choose a different one.";
         }
         return ResponseUtil.error(HttpStatus.CONFLICT, message, message);
     }
