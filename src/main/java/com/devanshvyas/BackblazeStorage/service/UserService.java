@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,11 +32,14 @@ public class UserService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private JwtService jwtService;
 
     public ResponseEntity<ApiResponse<UserDto>> register(User user) throws DataIntegrityViolationException {
         try {
-            String encryptPass = new BCryptPasswordEncoder(12).encode(user.getPassword());
+            String encryptPass = passwordEncoder.encode(user.getPassword());
             user.setPassword(encryptPass);
             userRepo.save(user);
             String jwtToken = jwtService.generateToken(user.getEmail());

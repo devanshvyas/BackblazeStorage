@@ -30,7 +30,7 @@ public class UserController {
         return service.login(user);
     }
 
-    @PostMapping("storageConfig")
+    @PostMapping("config-storage")
     public ResponseEntity<ApiResponse<UserDto>> configStorage(@RequestBody StorageConfig config, @AuthenticationPrincipal UserPrincipal principal) {
         return service.configStorage(principal.getUsername(), config);
     }
