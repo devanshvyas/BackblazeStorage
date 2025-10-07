@@ -14,6 +14,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+    private static final String TENANT_ID_CLAIM = "tenantId";
     private SecretKey secretKey;
 
     public JwtService() {
@@ -29,8 +30,9 @@ public class JwtService {
         }
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String email, String tenantId) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put(TENANT_ID_CLAIM, tenantId);
         return Jwts.builder()
                 .claims(claims)
                 .subject(email)
@@ -54,6 +56,10 @@ public class JwtService {
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractTenantId(String token) {
+        return extractClaim(token, claims -> claims.get(TENANT_ID_CLAIM, String.class));
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {

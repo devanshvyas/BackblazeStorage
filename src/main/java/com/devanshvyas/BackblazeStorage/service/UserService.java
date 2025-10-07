@@ -1,5 +1,7 @@
 package com.devanshvyas.BackblazeStorage.service;
 
+import com.devanshvyas.BackblazeStorage.config.multitenancy.AppTenantContext;
+import com.devanshvyas.BackblazeStorage.config.multitenancy.TenantService;
 import com.devanshvyas.BackblazeStorage.dto.ApiResponse;
 import com.devanshvyas.BackblazeStorage.dto.UserDto;
 import com.devanshvyas.BackblazeStorage.model.StorageConfig;
@@ -16,6 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -37,12 +42,16 @@ public class UserService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private TenantService tenantService;
+
     public ResponseEntity<ApiResponse<UserDto>> register(User user) throws DataIntegrityViolationException {
         try {
             String encryptPass = passwordEncoder.encode(user.getPassword());
             user.setPassword(encryptPass);
+            tenantService.createTenant(user.getUsername());
             userRepo.save(user);
-            String jwtToken = jwtService.generateToken(user.getEmail());
+            String jwtToken = jwtService.generateToken(user.getEmail(), user.getUsername());
             UserDto userDto = new UserDto(user.getEmail(),
                     user.getRole(),
                     false,
@@ -57,8 +66,8 @@ public class UserService {
         UsernamePasswordAuthenticationToken userPassToken = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
         Authentication authentication = authenticationManager.authenticate(userPassToken);
         if (authentication.isAuthenticated()) {
-            String jwtToken = jwtService.generateToken(user.getEmail());
             User dbUser = userRepo.findByEmail(user.getEmail());
+            String jwtToken = jwtService.generateToken(user.getEmail(), dbUser.getUsername());
 
             UserDto userDto = new UserDto(user.getEmail(),
                     dbUser.getRole(),
