@@ -23,8 +23,8 @@ public class User {
 
     private UserRole role;
 
-    @Column(name = "admin_id")
-    private Integer adminId;
+    @Column(name = "admin_username")
+    private String adminUsername;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private StorageConfig storageConfig;

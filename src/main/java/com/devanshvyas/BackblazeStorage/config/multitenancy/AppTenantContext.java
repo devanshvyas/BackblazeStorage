@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -15,6 +17,7 @@ public class AppTenantContext implements Filter {
     private static final String LOGGER_TENANT_ID = "tenant_id";
     private static final String DEFAULT_TENANT = "public";
     private static final ThreadLocal<String> currentTenant = new ThreadLocal<>();
+    private final List<String> excludedUrls = List.of("/user/config-storage", "/user/register-sub-user");
 
     @Autowired
     private JwtService jwtService;
@@ -38,7 +41,7 @@ public class AppTenantContext implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String header = httpServletRequest.getHeader("Authorization");
-        if (header != null && header.contains("Bearer ") && !httpServletRequest.getServletPath().contains("config-storage")) {
+        if (header != null && header.contains("Bearer ") && !excludedUrls.contains(httpServletRequest.getServletPath())) {
             String token = header.substring(7);
             String tenantId = jwtService.extractTenantId(token);
             setCurrentTenant(tenantId);

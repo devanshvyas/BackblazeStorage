@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping("register")
     public ResponseEntity<ApiResponse<UserDto>> register(@RequestBody User user) {
-        return service.register(user);
+        return service.register(user, null);
     }
 
     @PostMapping("login")
@@ -33,5 +33,10 @@ public class UserController {
     @PostMapping("config-storage")
     public ResponseEntity<ApiResponse<UserDto>> configStorage(@RequestBody StorageConfig config, @AuthenticationPrincipal UserPrincipal principal) {
         return service.configStorage(principal.getUsername(), config);
+    }
+
+    @PostMapping("register-sub-user")
+    public ResponseEntity<ApiResponse<UserDto>> registerSubUser(@RequestBody User user, @AuthenticationPrincipal UserPrincipal principal) {
+        return service.register(user, principal.getUsername());
     }
 }
