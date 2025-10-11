@@ -12,6 +12,6 @@ import lombok.RequiredArgsConstructor;
 public class UserDto {
     private String email;
     private UserRole role;
-    private boolean isStorageConfigured;
+    private Boolean isStorageConfigured;
     private String token;
 }

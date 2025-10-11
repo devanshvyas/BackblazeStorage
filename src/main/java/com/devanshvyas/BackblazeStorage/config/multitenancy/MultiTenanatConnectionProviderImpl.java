@@ -1,5 +1,6 @@
 package com.devanshvyas.BackblazeStorage.config.multitenancy;
 
+import com.devanshvyas.BackblazeStorage.util.Constants;
 import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class MultiTenanatConnectionProviderImpl extends AbstractDataSourceBasedM
 
     @Override
     public Connection getConnection(Object tenantIdentifier) throws SQLException {
-        String tenantId = tenantIdentifier != null ? tenantIdentifier.toString() : "public";
+        String tenantId = tenantIdentifier != null ? tenantIdentifier.toString() : Constants.DEFAULT_TENANT;
         logger.info("Acquiring connection for tenant {}", tenantId);
         Connection connection = getAnyConnection();
         try (Statement statement = connection.createStatement()) {
@@ -43,7 +44,7 @@ public class MultiTenanatConnectionProviderImpl extends AbstractDataSourceBasedM
     @Override
     public void releaseConnection(Object tenantIdentifier, Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
-            statement.execute(String.format("SET search_path TO %s", "public"));
+            statement.execute(String.format("SET search_path TO %s", Constants.DEFAULT_TENANT));
         }
         releaseAnyConnection(connection);
     }

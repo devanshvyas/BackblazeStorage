@@ -1,5 +1,6 @@
 package com.devanshvyas.BackblazeStorage.config.multitenancy;
 
+import com.devanshvyas.BackblazeStorage.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ public class TenantService {
 
     public void createTenant(String tenantId) {
         String sql = "CREATE SCHEMA IF NOT EXISTS " + tenantId + ";";
-        //String userTableSql = "CREATE TABLE IF NOT EXISTS " + tenantId + ".users (id SERIAL PRIMARY KEY, username VARCHAR(50) UNIQUE, email VARCHAR(255) UNIQUE, password VARCHAR(100), role VARCHAR(20), admin_id INTEGER, created_at TIMESTAMP, updated_at TIMESTAMP);";
-        jdbcTemplate.execute(sql);
+        String galleryTableSql = "CREATE TABLE IF NOT EXISTS " + tenantId + ".gallery_metadata (id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL, content_type VARCHAR(50), b2_file_key VARCHAR(255) UNIQUE, size INTEGER, owner_id INTEGER NOT NULL, uploaded_at TIMESTAMP, CONSTRAINT fk_user FOREIGN KEY(owner_id) REFERENCES public.users(id) on DELETE CASCADE);";
+        jdbcTemplate.execute(sql + galleryTableSql);
     }
 }

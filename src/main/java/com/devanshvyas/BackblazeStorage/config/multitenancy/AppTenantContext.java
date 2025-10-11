@@ -1,6 +1,7 @@
 package com.devanshvyas.BackblazeStorage.config.multitenancy;
 
 import com.devanshvyas.BackblazeStorage.service.JwtService;
+import com.devanshvyas.BackblazeStorage.util.Constants;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.MDC;
@@ -15,7 +16,6 @@ import java.util.Objects;
 @Component
 public class AppTenantContext implements Filter {
     private static final String LOGGER_TENANT_ID = "tenant_id";
-    private static final String DEFAULT_TENANT = "public";
     private static final ThreadLocal<String> currentTenant = new ThreadLocal<>();
     private final List<String> excludedUrls = List.of("/user/config-storage", "/user/register-sub-user");
 
@@ -24,7 +24,7 @@ public class AppTenantContext implements Filter {
 
     public static String getCurrentTenant() {
         String tenant = currentTenant.get();
-        return Objects.requireNonNullElse(tenant, DEFAULT_TENANT);
+        return Objects.requireNonNullElse(tenant, Constants.DEFAULT_TENANT);
     }
 
     public static void setCurrentTenant(String tenant) {

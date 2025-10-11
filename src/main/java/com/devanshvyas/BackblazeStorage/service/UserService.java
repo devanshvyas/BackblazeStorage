@@ -52,16 +52,19 @@ public class UserService {
         try {
             String encryptPass = passwordEncoder.encode(user.getPassword());
             user.setPassword(encryptPass);
+            String tenantUsername = user.getUsername();
             if (adminUsername != null) {
                 user.setAdminUsername(adminUsername);
                 user.setRole(UserRole.USER);
+                tenantUsername = adminUsername;
             } else {
+                user.setRole(UserRole.ADMIN);
                 tenantService.createTenant(user.getUsername());
             }
             user.setCreatedAt(Instant.now());
             user.setUpdatedAt(Instant.now());
             userRepo.save(user);
-            String jwtToken = jwtService.generateToken(user.getEmail(), user.getUsername());
+            String jwtToken = jwtService.generateToken(user.getEmail(), tenantUsername);
             UserDto userDto = new UserDto(user.getEmail(),
                     user.getRole(),
                     adminUsername == null ? false : null,
@@ -76,27 +79,31 @@ public class UserService {
         UsernamePasswordAuthenticationToken userPassToken = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
         Authentication authentication = authenticationManager.authenticate(userPassToken);
         if (authentication.isAuthenticated()) {
-            User dbUser = userRepo.findByEmail(user.getEmail());
-            String jwtToken = jwtService.generateToken(user.getEmail(), dbUser.getUsername());
+            user = userRepo.findByEmail(user.getEmail());
+            String tenantUsername = user.getUsername();
+            if (user.getAdminUsername() != null) {
+                tenantUsername = user.getAdminUsername();
+            }
+            String jwtToken = jwtService.generateToken(user.getEmail(), tenantUsername);
 
             UserDto userDto = new UserDto(user.getEmail(),
-                    dbUser.getRole(),
-                    dbUser.getStorageConfig() != null ? dbUser.getStorageConfig().getConfigured() : null,
+                    user.getRole(),
+                    user.getStorageConfig() != null ? user.getStorageConfig().getConfigured() : null,
                     jwtToken);
             return ResponseUtil.success("success", userDto);
         }
         return ResponseUtil.error("Login Failed!", null);
     }
 
-    public ResponseEntity<ApiResponse<UserDto>> configStorage(String email, StorageConfig config) {
+    public ResponseEntity<ApiResponse<UserDto>> configStorage(String username, StorageConfig config) {
         try {
-            User user = userRepo.findByEmail(email);
-            String encryptedKey = encryptionService.encrypt(config.getB2ApplicationKey());
-            config.setB2ApplicationKey(encryptedKey);
+            User user = userRepo.findByUsername(username);
+            String encryptedKey = encryptionService.encrypt(config.getApplicationKey());
+            config.setApplicationKey(encryptedKey);
             config.setConfigured(true);
             config.setUser(user);
             storageRepo.save(config);
-            UserDto userDto = new UserDto(email, user.getRole(), true, null);
+            UserDto userDto = new UserDto(user.getEmail(), user.getRole(), true, null);
             return ResponseUtil.success("Storage config updated!", userDto);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
