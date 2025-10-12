@@ -3,6 +3,7 @@ package com.devanshvyas.BackblazeStorage.service;
 import com.devanshvyas.BackblazeStorage.config.multitenancy.AppTenantContext;
 import com.devanshvyas.BackblazeStorage.dto.ApiResponse;
 import com.devanshvyas.BackblazeStorage.model.ContentType;
+import com.devanshvyas.BackblazeStorage.model.FileWrapper;
 import com.devanshvyas.BackblazeStorage.model.GalleryMetadata;
 import com.devanshvyas.BackblazeStorage.model.User;
 import com.devanshvyas.BackblazeStorage.repo.GalleryMetadataRepo;
@@ -79,6 +80,16 @@ public class FileService {
             return ResponseUtil.success("Deleted " + fileNames.toString() + " successfully", "Deleted " + fileNames.toString() + " successfully");
         } else {
             return ResponseUtil.error("Error", "File name should not be empty");
+        }
+    }
+
+    public ResponseEntity<ApiResponse<FileWrapper>> fetchAllFiles() {
+        try {
+            FileWrapper fileWrapper = new FileWrapper();
+            fileWrapper.setFiles(galleryMetadataRepo.findAll());
+            return ResponseUtil.success("Fetched all data successfully", fileWrapper);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
     }
 }

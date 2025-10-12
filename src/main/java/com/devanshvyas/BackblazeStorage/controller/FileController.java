@@ -3,6 +3,7 @@ package com.devanshvyas.BackblazeStorage.controller;
 import com.devanshvyas.BackblazeStorage.dto.ApiResponse;
 import com.devanshvyas.BackblazeStorage.dto.UserDto;
 import com.devanshvyas.BackblazeStorage.model.FileWrapper;
+import com.devanshvyas.BackblazeStorage.model.GalleryMetadata;
 import com.devanshvyas.BackblazeStorage.model.UserPrincipal;
 import com.devanshvyas.BackblazeStorage.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class FileController {
     @GetMapping("{filename:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("filename") String fileName) {
         return service.downloadFile(fileName);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<FileWrapper>> fetchAllFiles() {
+        return service.fetchAllFiles();
     }
 
     @DeleteMapping("{filename:.+}")
