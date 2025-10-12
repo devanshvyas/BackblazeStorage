@@ -1,4 +1,4 @@
-package com.devanshvyas.BackblazeStorage.service;
+package com.devanshvyas.BackblazeStorage.service.encryption;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

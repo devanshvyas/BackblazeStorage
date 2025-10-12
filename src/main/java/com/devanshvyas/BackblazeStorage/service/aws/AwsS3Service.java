@@ -1,36 +1,21 @@
-package com.devanshvyas.BackblazeStorage.service;
+package com.devanshvyas.BackblazeStorage.service.aws;
 
-import com.devanshvyas.BackblazeStorage.config.multitenancy.AppTenantContext;
-import com.devanshvyas.BackblazeStorage.model.StorageConfig;
-import com.devanshvyas.BackblazeStorage.model.TenantS3Config;
-import com.devanshvyas.BackblazeStorage.model.User;
-import com.devanshvyas.BackblazeStorage.repo.StorageConfigRepo;
-import com.devanshvyas.BackblazeStorage.repo.UserRepo;
+import com.devanshvyas.BackblazeStorage.model.tenant.TenantS3Config;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
-import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AwsS3Service {
-    @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private StorageConfigRepo storageConfigRepo;
 
     @Autowired
     private TenantS3Service tenantS3Service;

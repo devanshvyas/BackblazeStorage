@@ -1,4 +1,4 @@
-package com.devanshvyas.BackblazeStorage.model;
+package com.devanshvyas.BackblazeStorage.model.metadata;
 
 public enum ContentType {
     IMAGE,

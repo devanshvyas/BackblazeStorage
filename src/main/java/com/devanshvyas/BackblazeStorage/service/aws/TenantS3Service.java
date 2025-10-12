@@ -1,11 +1,12 @@
-package com.devanshvyas.BackblazeStorage.service;
+package com.devanshvyas.BackblazeStorage.service.aws;
 
 import com.devanshvyas.BackblazeStorage.config.multitenancy.AppTenantContext;
-import com.devanshvyas.BackblazeStorage.model.StorageConfig;
-import com.devanshvyas.BackblazeStorage.model.TenantS3Config;
-import com.devanshvyas.BackblazeStorage.model.User;
-import com.devanshvyas.BackblazeStorage.repo.StorageConfigRepo;
-import com.devanshvyas.BackblazeStorage.repo.UserRepo;
+import com.devanshvyas.BackblazeStorage.model.user.StorageConfig;
+import com.devanshvyas.BackblazeStorage.model.tenant.TenantS3Config;
+import com.devanshvyas.BackblazeStorage.model.user.User;
+import com.devanshvyas.BackblazeStorage.repo.user.StorageConfigRepo;
+import com.devanshvyas.BackblazeStorage.repo.user.UserRepo;
+import com.devanshvyas.BackblazeStorage.service.encryption.EncryptionService;
 import com.devanshvyas.BackblazeStorage.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 @Service
 public class TenantS3Service {

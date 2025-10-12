@@ -2,10 +2,10 @@ package com.devanshvyas.BackblazeStorage.controller;
 
 import com.devanshvyas.BackblazeStorage.dto.ApiResponse;
 import com.devanshvyas.BackblazeStorage.dto.UserDto;
-import com.devanshvyas.BackblazeStorage.model.StorageConfig;
-import com.devanshvyas.BackblazeStorage.model.User;
-import com.devanshvyas.BackblazeStorage.model.UserPrincipal;
-import com.devanshvyas.BackblazeStorage.service.UserService;
+import com.devanshvyas.BackblazeStorage.model.user.StorageConfig;
+import com.devanshvyas.BackblazeStorage.model.user.User;
+import com.devanshvyas.BackblazeStorage.model.config.UserPrincipal;
+import com.devanshvyas.BackblazeStorage.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

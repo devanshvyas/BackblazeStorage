@@ -1,8 +1,8 @@
-package com.devanshvyas.BackblazeStorage.service;
+package com.devanshvyas.BackblazeStorage.service.jwt;
 
-import com.devanshvyas.BackblazeStorage.model.User;
-import com.devanshvyas.BackblazeStorage.model.UserPrincipal;
-import com.devanshvyas.BackblazeStorage.repo.UserRepo;
+import com.devanshvyas.BackblazeStorage.model.user.User;
+import com.devanshvyas.BackblazeStorage.model.config.UserPrincipal;
+import com.devanshvyas.BackblazeStorage.repo.user.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

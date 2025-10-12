@@ -1,7 +1,7 @@
-package com.devanshvyas.BackblazeStorage.config;
+package com.devanshvyas.BackblazeStorage.config.jwt;
 
-import com.devanshvyas.BackblazeStorage.service.JwtService;
-import com.devanshvyas.BackblazeStorage.service.MyUsersDetailService;
+import com.devanshvyas.BackblazeStorage.service.jwt.JwtService;
+import com.devanshvyas.BackblazeStorage.service.jwt.MyUsersDetailService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

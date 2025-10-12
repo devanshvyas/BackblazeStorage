@@ -1,6 +1,10 @@
-package com.devanshvyas.BackblazeStorage.config;
+package com.devanshvyas.BackblazeStorage.config.jwt;
 
 import com.devanshvyas.BackblazeStorage.config.multitenancy.AppTenantContext;
+import com.devanshvyas.BackblazeStorage.repo.file.DriveMetadataRepo;
+import com.devanshvyas.BackblazeStorage.repo.file.GalleryMetadataRepo;
+import com.devanshvyas.BackblazeStorage.service.file.DriveService;
+import com.devanshvyas.BackblazeStorage.service.file.GalleryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,4 +62,15 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
+
+    @Bean
+    public DriveService driveService(DriveMetadataRepo repo) {
+        return new DriveService(repo);
+    }
+
+//    @Bean
+//    public GalleryService galleryService(GalleryMetadataRepo repo) {
+//        return new GalleryService(repo);
+//    }
+
 }

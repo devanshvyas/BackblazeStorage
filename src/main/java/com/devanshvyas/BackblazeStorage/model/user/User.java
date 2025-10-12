@@ -1,4 +1,4 @@
-package com.devanshvyas.BackblazeStorage.model;
+package com.devanshvyas.BackblazeStorage.model.user;
 
 import com.devanshvyas.BackblazeStorage.util.Constants;
 import jakarta.persistence.*;

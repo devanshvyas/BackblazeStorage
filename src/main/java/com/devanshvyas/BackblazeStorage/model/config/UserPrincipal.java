@@ -1,5 +1,6 @@
-package com.devanshvyas.BackblazeStorage.model;
+package com.devanshvyas.BackblazeStorage.model.config;
 
+import com.devanshvyas.BackblazeStorage.model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

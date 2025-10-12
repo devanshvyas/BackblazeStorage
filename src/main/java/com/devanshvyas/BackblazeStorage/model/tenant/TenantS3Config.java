@@ -1,5 +1,6 @@
-package com.devanshvyas.BackblazeStorage.model;
+package com.devanshvyas.BackblazeStorage.model.tenant;
 
+import com.devanshvyas.BackblazeStorage.model.user.StorageConfig;
 import lombok.Data;
 import software.amazon.awssdk.services.s3.S3Client;
 

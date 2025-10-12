@@ -1,4 +1,4 @@
-package com.devanshvyas.BackblazeStorage.service;
+package com.devanshvyas.BackblazeStorage.service.jwt;
 
 import io.jsonwebtoken.*;
 import org.springframework.security.core.userdetails.UserDetails;

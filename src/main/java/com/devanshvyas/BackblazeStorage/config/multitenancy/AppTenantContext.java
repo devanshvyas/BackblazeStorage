@@ -1,6 +1,6 @@
 package com.devanshvyas.BackblazeStorage.config.multitenancy;
 
-import com.devanshvyas.BackblazeStorage.service.JwtService;
+import com.devanshvyas.BackblazeStorage.service.jwt.JwtService;
 import com.devanshvyas.BackblazeStorage.util.Constants;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

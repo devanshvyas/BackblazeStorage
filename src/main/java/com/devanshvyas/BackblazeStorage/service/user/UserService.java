@@ -1,14 +1,15 @@
-package com.devanshvyas.BackblazeStorage.service;
+package com.devanshvyas.BackblazeStorage.service.user;
 
-import com.devanshvyas.BackblazeStorage.config.multitenancy.AppTenantContext;
-import com.devanshvyas.BackblazeStorage.config.multitenancy.TenantService;
+import com.devanshvyas.BackblazeStorage.service.tenant.TenantService;
 import com.devanshvyas.BackblazeStorage.dto.ApiResponse;
 import com.devanshvyas.BackblazeStorage.dto.UserDto;
-import com.devanshvyas.BackblazeStorage.model.StorageConfig;
-import com.devanshvyas.BackblazeStorage.model.User;
-import com.devanshvyas.BackblazeStorage.model.UserRole;
-import com.devanshvyas.BackblazeStorage.repo.StorageConfigRepo;
-import com.devanshvyas.BackblazeStorage.repo.UserRepo;
+import com.devanshvyas.BackblazeStorage.model.user.StorageConfig;
+import com.devanshvyas.BackblazeStorage.model.user.User;
+import com.devanshvyas.BackblazeStorage.model.user.UserRole;
+import com.devanshvyas.BackblazeStorage.repo.user.StorageConfigRepo;
+import com.devanshvyas.BackblazeStorage.repo.user.UserRepo;
+import com.devanshvyas.BackblazeStorage.service.encryption.EncryptionService;
+import com.devanshvyas.BackblazeStorage.service.jwt.JwtService;
 import com.devanshvyas.BackblazeStorage.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,14 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -65,10 +62,7 @@ public class UserService {
             user.setUpdatedAt(Instant.now());
             userRepo.save(user);
             String jwtToken = jwtService.generateToken(user.getEmail(), tenantUsername);
-            UserDto userDto = new UserDto(user.getEmail(),
-                    user.getRole(),
-                    adminUsername == null ? false : null,
-                    jwtToken);
+            UserDto userDto = new UserDto(user, jwtToken);
             return ResponseUtil.success("Registered user successfully!", userDto);
         } catch (DataIntegrityViolationException e) {
             throw e;
@@ -86,10 +80,7 @@ public class UserService {
             }
             String jwtToken = jwtService.generateToken(user.getEmail(), tenantUsername);
 
-            UserDto userDto = new UserDto(user.getEmail(),
-                    user.getRole(),
-                    user.getStorageConfig() != null ? user.getStorageConfig().getConfigured() : null,
-                    jwtToken);
+            UserDto userDto = new UserDto(user, jwtToken);
             return ResponseUtil.success("success", userDto);
         }
         return ResponseUtil.error("Login Failed!", null);
@@ -103,7 +94,7 @@ public class UserService {
             config.setConfigured(true);
             config.setUser(user);
             storageRepo.save(config);
-            UserDto userDto = new UserDto(user.getEmail(), user.getRole(), true, null);
+            UserDto userDto = new UserDto(user, null);
             return ResponseUtil.success("Storage config updated!", userDto);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
