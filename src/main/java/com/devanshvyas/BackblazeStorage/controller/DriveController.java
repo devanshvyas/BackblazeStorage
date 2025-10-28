@@ -31,8 +31,9 @@ public class DriveController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<FileDTO>> fetchAllFiles() {
-        return service.fetchAllFiles();
+    public ResponseEntity<ApiResponse<FileDTO>> fetchAllFiles(@RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "0") int size) {
+        return service.fetchAllFiles(page, size);
     }
 
     @DeleteMapping("{filename:.+}")

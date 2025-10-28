@@ -29,7 +29,7 @@ public class AwsS3Service {
                     .key(fileKey)
                     .build();
             PutObjectResponse response = config.getClient()
-                    .putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                    .putObject(request, RequestBody.fromBytes(file.getBytes()));
             System.out.println("Upload Successfully " + response.eTag());
             return response.eTag();
         } catch (Exception e) {

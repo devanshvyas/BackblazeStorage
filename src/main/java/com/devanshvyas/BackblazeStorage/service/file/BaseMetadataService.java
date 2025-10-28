@@ -12,6 +12,10 @@ import com.devanshvyas.BackblazeStorage.util.ResponseUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -103,10 +107,18 @@ public abstract class BaseMetadataService<T extends BaseMetadata> {
         }
     }
 
-    public ResponseEntity<ApiResponse<FileDTO>> fetchAllFiles() {
+    public ResponseEntity<ApiResponse<FileDTO>> fetchAllFiles(int page, int size) {
         try {
-            FileDTO fileDTO = new FileDTO((List<BaseMetadata>) repo.findAll());
-            return ResponseUtil.success("Fetched all data successfully", fileDTO);
+            if (size != 0) {
+                Sort sort = Sort.by(Sort.Direction.ASC, "uploadedAt");
+                Pageable pageable = PageRequest.of(page, size, sort);
+                Page<BaseMetadata> pageData = (Page<BaseMetadata>) repo.findAll(pageable);
+                FileDTO fileDTO = new FileDTO(pageData);
+                return ResponseUtil.success("Fetched all data successfully", fileDTO);
+            } else {
+                FileDTO fileDTO = new FileDTO((List<BaseMetadata>) repo.findAll());
+                return ResponseUtil.success("Fetched all data successfully", fileDTO);
+            }
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
